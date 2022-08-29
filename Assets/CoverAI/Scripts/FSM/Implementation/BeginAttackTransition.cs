@@ -1,8 +1,11 @@
-public class DeathTransition : FSMTransition
+using System;
+
+public class BeginAttackTransition : FSMTransition
 {
     public override bool FireTransition(CoverAgent agent)
     {
-        return agent.GetDelegates().IsDead();
+        Random rnd = new Random();
+        return rnd.NextDouble() >= 0.75;
     }
 
     public override void TransitionActions(CoverAgent agent)

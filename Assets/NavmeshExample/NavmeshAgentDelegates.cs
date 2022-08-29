@@ -1,8 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class NavmeshAgentDelegates : CoverAgentDelegates
@@ -13,36 +12,54 @@ public class NavmeshAgentDelegates : CoverAgentDelegates
     public float crouchSpeed = 1.5f;
     public override void Crouch()
     {
-        GetComponent<NavMeshAgent>().speed = this.crouchSpeed;
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = this.crouchSpeed;
         this.SetColor(Color.grey);
     }
 
     public override void MeleeAttack(GameObject target)
     {
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = 0f;
+        agent.updateRotation = false;
+        Vector3 lookPos = target.transform.position - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = rotation;
         this.SetColor(Color.yellow);
     }
 
     public override void MoveTo(Vector3 targetPosition)
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.updateRotation = true;
         agent.destination = targetPosition;
     }
 
     public override void RangedAttack(GameObject target)
     {
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = 0f;
+        agent.updateRotation = false;
+        Vector3 lookPos = target.transform.position - transform.position;
+        lookPos.y = 0;
+        Quaternion rotation = Quaternion.LookRotation(lookPos);
+        transform.rotation = rotation;
         this.SetColor(Color.magenta);
     }
 
     public override void Stand()
     {
-        GetComponent<NavMeshAgent>().speed = this.walkingSpeed;
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = this.walkingSpeed;
         this.SetColor(Color.green);
     }
 
     public override void Die()
     {
-        GetComponent<NavMeshAgent>().speed = 0f;
-        GetComponent<NavMeshAgent>().angularSpeed = 0f;
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = 0f;
+        agent.angularSpeed = 0f;
         this.SetColor(Color.black);
     }
 
@@ -51,13 +68,11 @@ public class NavmeshAgentDelegates : CoverAgentDelegates
         return Vector3.Distance(this.transform.position, this.enemy.transform.position) < this.deathAuraRadius;
     }
 
-    public override float DistanceTo(GameObject target)
+    public override float DistanceBetween(Vector3 startPosition, Vector3 endPosition)
     {
         float distance = 0f;
         NavMeshPath path = new NavMeshPath();
-        Vector3 startingPosition = this.transform.position;
-        Vector3 endingPosition = target.transform.position;
-        NavMesh.CalculatePath(startingPosition, endingPosition, NavMesh.AllAreas, path);
+        NavMesh.CalculatePath(startPosition, endPosition, NavMesh.AllAreas, path);
         Vector3[] points = path.corners;
         for (int i = 1; i < points.Length; i++)
         {
@@ -68,7 +83,9 @@ public class NavmeshAgentDelegates : CoverAgentDelegates
 
     public override void Charge()
     {
-        GetComponent<NavMeshAgent>().speed = this.runningSpeed;
+        NavMeshAgent agent = GetComponent<NavMeshAgent>();
+        agent.speed = this.runningSpeed;
+        agent.updateRotation = true;
         this.SetColor(Color.cyan);
     }
 

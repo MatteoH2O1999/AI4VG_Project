@@ -1,3 +1,5 @@
+using UnityEngine;
+
 public abstract class FSM : FSMState
 {
     protected FSMState currentState;
@@ -34,8 +36,18 @@ public abstract class FSM : FSMState
         }
     }
 
+    public override void OnEntry(CoverAgent agent)
+    {
+        this.currentState.OnEntry(agent);
+    }
+
     public override void OnStay(CoverAgent agent)
     {
         this.UpdateFSM(agent);
+    }
+
+    public override void OnInterrupt(CoverAgent agent)
+    {
+        this.currentState.OnInterrupt(agent);
     }
 }

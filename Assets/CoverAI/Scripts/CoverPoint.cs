@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class CoverPoint
 {
-    private Vector3 position;
+    private readonly Vector3 position;
     private GameObject occupiedBy = null;
 
     public CoverPoint(Vector3 position)
@@ -35,6 +35,16 @@ public class CoverPoint
             return false;
         }
         this.occupiedBy = gameObject;
+        return true;
+    }
+
+    public bool freePoint()
+    {
+        if (!this.isOccupied())
+        {
+            return false;
+        }
+        this.occupiedBy = null;
         return true;
     }
 

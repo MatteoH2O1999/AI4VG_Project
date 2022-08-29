@@ -5,7 +5,7 @@ public class DeadState : FSMState
     private float deathTime;
     public override void OnEntry(CoverAgent agent)
     {
-        agent.GetComponent<CoverAgentDelegates>().Die();
+        agent.GetDelegates().Die();
         this.deathTime = Time.time;
     }
 

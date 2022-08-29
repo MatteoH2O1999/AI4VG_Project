@@ -19,5 +19,9 @@ public abstract class CoverAgentDelegates : MonoBehaviour
     abstract public void MeleeAttack(GameObject target);
     abstract public void Die();
     abstract public bool IsDead();
-    abstract public float DistanceTo(GameObject target);
+    public float DistanceTo(GameObject target)
+    {
+        return this.DistanceBetween(this.transform.position, target.transform.position);
+    }
+    abstract public float DistanceBetween(Vector3 startPosition, Vector3 endPosition);
 }
