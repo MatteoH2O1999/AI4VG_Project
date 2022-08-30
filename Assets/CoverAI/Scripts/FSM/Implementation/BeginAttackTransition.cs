@@ -5,7 +5,7 @@ public class BeginAttackTransition : FSMTransition
     public override bool FireTransition(CoverAgent agent)
     {
         Random rnd = new Random();
-        return rnd.NextDouble() >= 0.75;
+        return rnd.NextDouble() >= 0.95;
     }
 
     public override void TransitionActions(CoverAgent agent)

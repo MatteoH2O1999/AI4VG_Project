@@ -109,7 +109,7 @@ NavMeshSettings:
     agentRadius: 0.75
     agentHeight: 3
     agentSlope: 45
-    agentClimb: 0.4
+    agentClimb: 1
     ledgeDropHeight: 0
     maxJumpAcrossDistance: 0
     minRegionArea: 2
@@ -800,7 +800,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 479634063}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
+  m_Radius: 0.75
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 75
@@ -1463,7 +1463,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 884734882}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
+  m_Radius: 0.75
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 75
@@ -1741,15 +1741,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8675014262205496205, guid: 6d76c0193651d7a4f8b7f1fda762f95c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -16.93
+      value: -37.613556
       objectReference: {fileID: 0}
     - target: {fileID: 8675014262205496205, guid: 6d76c0193651d7a4f8b7f1fda762f95c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -18.5
+      value: -17.999985
       objectReference: {fileID: 0}
     - target: {fileID: 8675014262205496205, guid: 6d76c0193651d7a4f8b7f1fda762f95c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 42.37
+      value: 28.234972
       objectReference: {fileID: 0}
     - target: {fileID: 8675014262205496205, guid: 6d76c0193651d7a4f8b7f1fda762f95c, type: 3}
       propertyPath: m_LocalRotation.w
@@ -2477,7 +2477,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1256110604}
   m_LocalRotation: {x: 0, y: 0, z: 0.10452846, w: 0.9945219}
-  m_LocalPosition: {x: 65.34, y: -15.62, z: -26.05}
+  m_LocalPosition: {x: 65.34, y: -15.4, z: -26.05}
   m_LocalScale: {x: 5, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2612,6 +2612,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   distanceBetweenPoints: 2
+  distanceBetweenCachePoints: 0.5
   spawns:
   - {x: -17.38, y: 5, z: 34}
 --- !u!114 &1506491569
@@ -3817,7 +3818,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 2051698864}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 1
+  m_Radius: 0.75
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 75

@@ -8,28 +8,29 @@ public class ExitingCoverState : FSMState
         CoverAgentDelegates delegates = agent.GetDelegates();
         Vector3 position = agent.transform.position;
         Vector3 standingGun = new(position.x, position.y + agent.gunHeightComparedToPivot, position.z);
-        Vector3 enemyPosition = delegates.enemy.transform.position;
-        enemyPosition.y = standingGun.y;
+        Vector3 enemyPosition = delegates.GetCoverMaster().GetPeak(delegates.enemy);
         Vector3 direction = enemyPosition - standingGun;
         if(Physics.Raycast(standingGun, direction, out RaycastHit hit))
         {
-            if(hit.collider == delegates.enemy)
+            if(hit.collider.gameObject == delegates.enemy)
             {
                 this.exitCoverPoint = null;
-                return;
             }
         }
-        Vector3[] possibleCovers = delegates.GetCoverMaster().GetReservedPoints(agent.gameObject);
-        foreach (Vector3 possibleCover in possibleCovers)
+        if(this.exitCoverPoint == null)
         {
-            standingGun = new(possibleCover.x, possibleCover.y + agent.gunHeightComparedToPivot, possibleCover.z);
-            direction = enemyPosition - standingGun;
-            if(Physics.Raycast(standingGun, direction, out RaycastHit possibleHit))
+            Vector3[] possibleCovers = delegates.GetCoverMaster().GetReservedPoints(agent.gameObject);
+            foreach (Vector3 possibleCover in possibleCovers)
             {
-                if(possibleHit.collider == delegates.enemy)
+                standingGun = new(possibleCover.x, possibleCover.y + agent.gunHeightComparedToPivot, possibleCover.z);
+                direction = enemyPosition - standingGun;
+                if(Physics.Raycast(standingGun, direction, out RaycastHit possibleHit))
                 {
-                    this.exitCoverPoint = possibleCover;
-                    return;
+                    if(possibleHit.collider.gameObject == delegates.enemy)
+                    {
+                        this.exitCoverPoint = possibleCover;
+                        break;
+                    }
                 }
             }
         }

@@ -98,7 +98,6 @@ public class CoverMaster : MonoBehaviour
 
     public Vector3? GetCover(GameObject agent, GameObject enemy, float gunHeightComparedToPivot, float gunCrouchHeightComparedToPivot, float pivotHeightComparedToTerrain)
     {
-
         Vector3 enemyGridPosition = this.Gridify(enemy.transform.position, this.distanceBetweenCachePoints);
         Vector3 agentGridPosition = this.Gridify(agent.transform.position, this.distanceBetweenCachePoints);
         if (this.cache.ContainsKey(enemyGridPosition) && this.cache[enemyGridPosition].Contains(agentGridPosition))
@@ -112,11 +111,12 @@ public class CoverMaster : MonoBehaviour
         float minCoverDistanceFromPlayer = coverAgent.meleeChargeRange;
 
         Vector3 additiveStandingHeight = new(0, pivotHeightComparedToTerrain + gunHeightComparedToPivot, 0);
-        Vector3 additiveCrouchHeigh = new(0, pivotHeightComparedToTerrain + gunCrouchHeightComparedToPivot, 0);
+        Vector3 additiveCrouchHeight = new(0, pivotHeightComparedToTerrain + gunCrouchHeightComparedToPivot, 0);
         Vector3 enemyPeak = this.GetPeak(enemy);
         Dictionary<Vector3, int> possiblePoints = new();
-        Vector3 nearestPoint = this.GetNearestPoint(agent.transform.position);
+        List<WallCover> wallCovers = new();
 
+        Vector3 nearestPoint = this.GetNearestPoint(agent.transform.position);
         List<Vector3> toSee = new()
         {
             nearestPoint
@@ -142,9 +142,32 @@ public class CoverMaster : MonoBehaviour
             {
                 if(this.CanHit(possiblePoint + additiveStandingHeight, enemyPeak, enemy))
                 {
-                    if(!this.CanHit(possiblePoint + additiveCrouchHeigh, enemyPeak, enemy))
+                    if(!this.CanHit(possiblePoint + additiveCrouchHeight, enemyPeak, enemy))
                     {
                         possiblePoints.Add(possiblePoint, 1);
+                    }
+                    else
+                    {
+                        if(Physics.Raycast(neighbour1 + additiveStandingHeight, enemyPeak - (neighbour1 + additiveStandingHeight), out RaycastHit hit1))
+                        {
+                            if (hit1.collider.gameObject != enemy)
+                                wallCovers.Add(new WallCover(neighbour1, possiblePoint, hit1.distance));
+                        }
+                        if (Physics.Raycast(neighbour2 + additiveStandingHeight, enemyPeak - (neighbour2 + additiveStandingHeight), out RaycastHit hit2))
+                        {
+                            if (hit2.collider.gameObject != enemy)
+                                wallCovers.Add(new WallCover(neighbour2, possiblePoint, hit2.distance));
+                        }
+                        if (Physics.Raycast(neighbour3 + additiveStandingHeight, enemyPeak - (neighbour3 + additiveStandingHeight), out RaycastHit hit3))
+                        {
+                            if (hit3.collider.gameObject != enemy)
+                                wallCovers.Add(new WallCover(neighbour3, possiblePoint, hit3.distance));
+                        }
+                        if (Physics.Raycast(neighbour4 + additiveStandingHeight, enemyPeak - (neighbour4 + additiveStandingHeight), out RaycastHit hit4))
+                        {
+                            if (hit4.collider.gameObject != enemy)
+                                wallCovers.Add(new WallCover(neighbour4, possiblePoint, hit4.distance));
+                        }
                     }
                 }
             }
@@ -165,7 +188,7 @@ public class CoverMaster : MonoBehaviour
         int max = 1;
         foreach (Vector3 point in possiblePoints.Keys)
         {
-            float initialHeight = additiveCrouchHeigh.y + distanceForPointEvaluation;
+            float initialHeight = additiveCrouchHeight.y + distanceForPointEvaluation;
             int pointMax = 1;
             while (!this.CanHit(new Vector3(point.x, point.y + initialHeight, point.z), enemyPeak, enemy))
             {
@@ -185,10 +208,33 @@ public class CoverMaster : MonoBehaviour
         }
         else
         {
-            if (!this.cache.ContainsKey(enemyGridPosition))
-                this.cache.Add(enemyGridPosition, new());
-            this.cache[enemyGridPosition].Add(agentGridPosition);
+            WallCover wallCover = null;
+            float minDistance = Mathf.Infinity;
+            foreach (WallCover cover in wallCovers)
+            {
+                if(cover.distanceToCover < minDistance)
+                {
+                    if (!this.coverPointsMap[cover.mainCover].isOccupied() && !this.coverPointsMap[cover.attackCover].isOccupied())
+                    {
+                        wallCover = cover;
+                        minDistance = wallCover.distanceToCover;
+                    }
+                }
+            }
+            if(wallCover != null)
+            {
+                this.coverPointsMap[wallCover.attackCover].bookPoint(agent);
+                this.coverPointsMap[wallCover.mainCover].bookPoint(agent);
+                toReturn = wallCover.mainCover;
+            }
+            if(!toReturn.HasValue && possiblePoints.Count == 0 && wallCovers.Count == 0)
+            {
+                if (!this.cache.ContainsKey(enemyGridPosition))
+                    this.cache.Add(enemyGridPosition, new());
+                this.cache[enemyGridPosition].Add(agentGridPosition);
+            }
         }
+
 
         return toReturn;
     }
@@ -230,7 +276,7 @@ public class CoverMaster : MonoBehaviour
         return this.coverPoints.OrderBy(point => Vector3.Distance(position, point.getPosition())).First().getPosition();
     }
 
-    private bool CanHit(Vector3 startingPosition, Vector3 destination, GameObject target)
+    public bool CanHit(Vector3 startingPosition, Vector3 destination, GameObject target)
     {
         Vector3 direction = destination - startingPosition;
         RaycastHit[] hits = Physics.RaycastAll(startingPosition, direction);
@@ -280,6 +326,20 @@ public class CoverMaster : MonoBehaviour
         foreach (var point in this.coverPoints)
         {
             point.drawGizmo();
+        }
+    }
+
+    private class WallCover
+    {
+        public Vector3 mainCover;
+        public Vector3 attackCover;
+        public float distanceToCover;
+
+        public WallCover(Vector3 mainCover, Vector3 attackCover, float distanceToCover)
+        {
+            this.mainCover = mainCover;
+            this.attackCover = attackCover;
+            this.distanceToCover = distanceToCover;
         }
     }
 }

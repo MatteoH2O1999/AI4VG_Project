@@ -17,6 +17,8 @@ public class NavmeshDelegates : CoverDelegates
             if(Vector3.Distance(toReturn, position) > Vector3.Distance(point, position))
                 toReturn = point;
         }
+        if (NavMesh.SamplePosition(toReturn, out NavMeshHit navHit, this.maxAgentHeight / 4, NavMesh.AllAreas))
+            toReturn = navHit.position;
         return toReturn;
     }
 

@@ -5,10 +5,8 @@ public class BehindCoverState : FSMState
     public override void OnEntry(CoverAgent agent)
     {
         CoverAgentDelegates delegates = agent.GetDelegates();
-        Vector3 currentPosition = agent.transform.position;
-        Vector3 gunPosition = new(currentPosition.x, currentPosition.y + agent.gunHeightComparedToPivot, currentPosition.z);
-        Vector3 enemyPosition = delegates.enemy.transform.position;
-        enemyPosition.y = gunPosition.y;
+        Vector3 gunPosition = agent.transform.position + new Vector3(0, agent.gunHeightComparedToPivot, 0);
+        Vector3 enemyPosition = agent.GetDelegates().GetCoverMaster().GetPeak(delegates.enemy);
         Vector3 direction = enemyPosition - gunPosition;
         if (Physics.Raycast(gunPosition, direction, out RaycastHit hit))
         {
