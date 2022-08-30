@@ -1,7 +1,6 @@
 using System.Linq;
 using UnityEngine;
 using UnityEngine.AI;
-using static UnityEngine.GraphicsBuffer;
 
 [RequireComponent(typeof(NavMeshAgent))]
 public class NavmeshAgentDelegates : CoverAgentDelegates
@@ -14,6 +13,7 @@ public class NavmeshAgentDelegates : CoverAgentDelegates
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.speed = this.crouchSpeed;
+        agent.updateRotation = true;
         this.SetColor(Color.grey);
     }
 
@@ -52,6 +52,7 @@ public class NavmeshAgentDelegates : CoverAgentDelegates
     {
         NavMeshAgent agent = GetComponent<NavMeshAgent>();
         agent.speed = this.walkingSpeed;
+        agent.updateRotation = true;
         this.SetColor(Color.green);
     }
 
@@ -71,7 +72,7 @@ public class NavmeshAgentDelegates : CoverAgentDelegates
     public override float DistanceBetween(Vector3 startPosition, Vector3 endPosition)
     {
         float distance = 0f;
-        NavMeshPath path = new NavMeshPath();
+        NavMeshPath path = new();
         NavMesh.CalculatePath(startPosition, endPosition, NavMesh.AllAreas, path);
         Vector3[] points = path.corners;
         for (int i = 1; i < points.Length; i++)
