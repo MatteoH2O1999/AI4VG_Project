@@ -828,7 +828,7 @@ MonoBehaviour:
   meleeAttackRange: 0
   coverMaster: {fileID: 1506491567}
   enemy: {fileID: 1955968228}
-  deathAuraRadius: 1.25
+  deathAuraRadius: 1.5
   walkingSpeed: 3.5
   runningSpeed: 7
   crouchSpeed: 1.5
@@ -1491,7 +1491,7 @@ MonoBehaviour:
   meleeAttackRange: 0
   coverMaster: {fileID: 1506491567}
   enemy: {fileID: 1955968228}
-  deathAuraRadius: 1.25
+  deathAuraRadius: 1.5
   walkingSpeed: 3.5
   runningSpeed: 7
   crouchSpeed: 1.5
@@ -3805,7 +3805,7 @@ MonoBehaviour:
   meleeAttackRange: 0
   coverMaster: {fileID: 1506491567}
   enemy: {fileID: 1955968228}
-  deathAuraRadius: 1.25
+  deathAuraRadius: 1.5
   walkingSpeed: 3.5
   runningSpeed: 7
   crouchSpeed: 1.5
