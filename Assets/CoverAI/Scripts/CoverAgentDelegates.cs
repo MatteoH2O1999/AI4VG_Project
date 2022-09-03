@@ -4,7 +4,6 @@ using UnityEngine;
 
 public abstract class CoverAgentDelegates : MonoBehaviour
 {
-    public float meleeAttackRange;
     public GameObject coverMaster;
     public GameObject enemy;
     public CoverMaster GetCoverMaster()
